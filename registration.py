@@ -2,8 +2,8 @@ from aiogram import Router, types, F, filters
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.methods.send_message import SendMessage
 from aiogram.fsm.context import FSMContext
-from db_control import adduser, adduserinfo, getdate
-from parser_horoscope import request_ru_today_horoscope
+from db_control import adduser, adduserinfo, getdate, getsign
+from parser_horoscope import request_ru_today_horoscope, request_ru_tomorrow_horoscope
 
 
 router = Router()
@@ -99,7 +99,7 @@ async def day(callback: types.CallbackQuery, state: FSMContext):
     day = callback.data[4:]
     print(day)
     adduserinfo(str(callback.from_user.id), day, 'birth_day', 'users.db', 'bot_users')
-    adduserinfo(str(callback.from_user.id), 1, 'finished_reg', 'users.db', 'bot_users')
+    adduserinfo(str(callback.from_user.id), str(1), 'finished_reg', 'users.db', 'bot_users')
     date = getdate(str(callback.from_user.id), 'users.db', 'bot_users')
     adduserinfo(str(callback.from_user.id), star_sign(date[0], date[1]), 'sign', 'users.db', 'bot_users')
     keyboard = main_keyboard()
@@ -113,14 +113,14 @@ async def day(callback: types.CallbackQuery, state: FSMContext):
 @router.message(F.text == "Гороскоп на сегодня")
 async def hor_today(message: types.Message):
     try:
-        await message.answer("Гороскоп на сегодня")
+        await message.answer(request_ru_today_horoscope(getsign(message.from_user.id, 'users.db', 'bot_users')))
     except:
         None
 
 @router.message(F.text == "Гороскоп на завтра")
 async def hor_tomorrow(message: types.Message):
     try:
-        await message.answer("Гороскоп на завтра")
+        await message.answer(request_ru_tomorrow_horoscope(getsign(message.from_user.id, 'users.db', 'bot_users')))
     except:
         None
 
