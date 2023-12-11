@@ -35,3 +35,4 @@ def request_horoscope(sign_req, time_period):
         return request_ru_week_horoscope(sign_req)
     else:
         return "Доступен только гороскоп на сегодня, завтра или на неделю вперёд."
+
