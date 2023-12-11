@@ -27,5 +27,3 @@ def request_map(minute, hour, day, month, year, city):
     html = BS(req.content, 'html.parser')
     element = html.find('center').a['href']
     return element
-
-print(request_map('0', '11', '8', '5', '2004', 'набережные челны').replace(' ', '%20'))
