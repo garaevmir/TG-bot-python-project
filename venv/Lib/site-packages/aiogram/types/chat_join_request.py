@@ -63,7 +63,7 @@ class ChatJoinRequest(TelegramObject):
     from_user: User = Field(..., alias="from")
     """User that sent the join request"""
     user_chat_id: int
-    """Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 24 hours to send messages until the join request is processed, assuming no other administrator contacted the user."""
+    """Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 5 minutes to send messages until the join request is processed, assuming no other administrator contacted the user."""
     date: DateTime
     """Date the request was sent in Unix time"""
     bio: Optional[str] = None
@@ -279,7 +279,7 @@ class ChatJoinRequest(TelegramObject):
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
-        thumbnail: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -352,7 +352,7 @@ class ChatJoinRequest(TelegramObject):
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
-        thumbnail: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -428,7 +428,7 @@ class ChatJoinRequest(TelegramObject):
         duration: Optional[int] = None,
         performer: Optional[str] = None,
         title: Optional[str] = None,
-        thumbnail: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
@@ -499,7 +499,7 @@ class ChatJoinRequest(TelegramObject):
         duration: Optional[int] = None,
         performer: Optional[str] = None,
         title: Optional[str] = None,
-        thumbnail: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
@@ -680,7 +680,7 @@ class ChatJoinRequest(TelegramObject):
         self,
         document: Union[InputFile, str],
         message_thread_id: Optional[int] = None,
-        thumbnail: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -744,7 +744,7 @@ class ChatJoinRequest(TelegramObject):
         self,
         document: Union[InputFile, str],
         message_thread_id: Optional[int] = None,
-        thumbnail: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -1963,7 +1963,7 @@ class ChatJoinRequest(TelegramObject):
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
-        thumbnail: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -2039,7 +2039,7 @@ class ChatJoinRequest(TelegramObject):
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
-        thumbnail: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -2114,7 +2114,7 @@ class ChatJoinRequest(TelegramObject):
         message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
         length: Optional[int] = None,
-        thumbnail: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
@@ -2172,7 +2172,7 @@ class ChatJoinRequest(TelegramObject):
         message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
         length: Optional[int] = None,
-        thumbnail: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,

@@ -9,7 +9,7 @@ import registration
 
 async def scheduler(bot : Bot):
     scheduler = AsyncIOScheduler()
-    #scheduler.add_job(, trigger='cron', args=[bot], hour=12, minute=36)
+    scheduler.add_job(registration.daily_horoscope, trigger='cron', args=[bot], hour=15, minute=49)
     scheduler.start()
 
 async def on_startup(bot : Bot):

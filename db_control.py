@@ -47,3 +47,14 @@ def getsign(id : str, db_name : str, table_name : str):
     output = cursor.fetchall()
     cursor.close()
     return output[0][0]
+
+def getusers(db_name : str, table_name : str):
+    sqlite_connection = sqlite3.connect(db_name)
+    cursor = sqlite_connection.cursor()
+    insert_comm = '''SELECT *
+                    FROM {};
+                    '''.format(table_name)
+    cursor.execute(insert_comm)
+    output = cursor.fetchall()
+    cursor.close()
+    return output
