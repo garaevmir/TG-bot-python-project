@@ -5,6 +5,7 @@ from aiogram.fsm.context import FSMContext
 from db_control import adduser, adduserinfo, getdate, getsign, getusers, getuser
 from parser_horoscope import request_ru_today_horoscope, request_ru_tomorrow_horoscope
 from parser_compatibility import request_compatibility
+import random
 
 
 router = Router()
@@ -17,8 +18,9 @@ def main_keyboard():
     kb = [
         [types.KeyboardButton(text="Гороскоп на сегодня"),
         types.KeyboardButton(text="Гороскоп на завтра")],
-        [types.KeyboardButton(text="Натальная карта")],
-        [types.KeyboardButton(text="Проверить совместимость")],
+        [types.KeyboardButton(text="Натальная карта"),
+        types.KeyboardButton(text="Проверить совместимость")],
+        [types.KeyboardButton(text="Астрологический мем")],
         [types.KeyboardButton(text="Изменить данные")]
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
@@ -27,9 +29,10 @@ def main_keyboard():
 def reg_keyboard():
     kb = [
         [types.KeyboardButton(text="Изменить дату рождения")],
-        [types.KeyboardButton(text="Изменить время рождения")],
-        [types.KeyboardButton(text="Изменить имя")],
-        [types.KeyboardButton(text="Изменить пол")]
+        [types.KeyboardButton(text="Изменить время рождения"),
+        types.KeyboardButton(text="Изменить город рождения")],
+        [types.KeyboardButton(text="Изменить имя"),
+        types.KeyboardButton(text="Изменить пол")]
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
     return keyboard
@@ -164,6 +167,14 @@ async def month(callback: types.CallbackQuery):
     adduserinfo(str(callback.from_user.id), month, 'birth_month', 'users.db', 'bot_users')
     await callback.message.edit_text("Теперь выберите день", reply_markup=days_keyboard(int(month)))
 
+def get_meme() :
+    arr=range(1, 24)
+    photo=open(f'./memes/mem{random.choice(arr)}.jpg', 'rb')
+    return photo
+
+@router.message(F.text == "Астрологический мем")
+async def meme(message: types.Message):
+    await message.answer_photo(types.FSInputFile(f'./memes/mem{random.choice(range(1, 24))}.jpg'))
 
 
 @router.callback_query(F.data.startswith("day_"))
@@ -309,6 +320,32 @@ async def re_reg_date(message: types.Message, state: FSMContext):
         await message.answer("Выберите ваш пол", reply_markup=gender_keyboard())
     await state.set_state(Registration.refilling_gender)
 
+@router.message(F.text == "Изменить время рождения")
+async def re_reg_date(message: types.Message, state: FSMContext):
+    user_data = getuser(message.from_user.id, "users.db", "bot_users")
+    await message.answer("В данный момент у вас указано время {}:{}. Введите новое время в формате HH:MM(если не знаете своего времени рождения, то напишите 12:00)".format(user_data[8], user_data[9]))
+    await state.set_state(Registration.refilling_birth_time)
+
+@router.message(F.text == "Изменить город рождения")
+async def re_reg_date(message: types.Message, state: FSMContext):
+    user_data = getuser(message.from_user.id, "users.db", "bot_users")
+    if user_data[11] != "none":
+        await message.answer("В данный момент у вас указан город {}. Введите новый город".format(user_data[11]))
+    else:
+        await message.answer("Введите новый город", reply_markup=main_keyboard())
+    await state.set_state(Registration.refilling_birth_city)
+
+
+@router.message(Registration.refilling_birth_city)
+async def city(message: types.Message, state: FSMContext):
+    place = message.text
+    if "'" in place or "SELECT" in place or "DROP" in place or "UPDATE" in place or "WHERE" in place or "=" in place or "UNION" in place or "INSERT" in place or "DELETE" in place:
+        await message.answer("Введите корректное название города")
+        return
+    adduserinfo(str(message.from_user.id), place, 'city', 'users.db', 'bot_users')
+    await message.answer("Успешно изменено")
+    await state.clear()
+
 @router.message(Registration.refilling_birthday_date)
 async def f_name(message: types.Message, state: FSMContext):
     year = message.text
@@ -344,6 +381,25 @@ async def first_name(message: types.Message, state: FSMContext):
         await message.answer("Пол успешно обновлен", reply_markup=main_keyboard())
     except:
         None
+
+
+@router.message(Registration.refilling_birth_time)
+async def time(message: types.Message, state: FSMContext):
+    time = message.text.split(":")
+    if len(time) != 2:
+        await message.answer("Введите корректное время")
+        return
+    if not time[0].isdigit() or not time[1].isdigit():
+        await message.answer("Введите корректное время")
+        return
+    time = list(map(int, time))
+    if time[0] >= 24 or time[0] < 0 or time[1] < 0 or time[1] >= 60:
+        await message.answer("Введите корректное время")
+        return
+    adduserinfo(str(message.from_user.id), str(time[0]), 'birth_time_hour', 'users.db', 'bot_users')
+    adduserinfo(str(message.from_user.id), str(time[1]), 'birth_time_minute', 'users.db', 'bot_users')
+    await message.answer(text="Успешно изменено", reply_markup=main_keyboard())
+    await state.clear()
 
 
 
