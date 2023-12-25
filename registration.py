@@ -5,6 +5,8 @@ from aiogram.fsm.context import FSMContext
 from db_control import adduser, adduserinfo, getdate, getsign, getusers, getuser
 from parser_horoscope import request_ru_today_horoscope, request_ru_tomorrow_horoscope
 from parser_compatibility import request_compatibility
+from parser_planet_sign import request_sign
+from parser_natal_chart import request_map
 import random
 
 
@@ -167,11 +169,6 @@ async def month(callback: types.CallbackQuery):
     adduserinfo(str(callback.from_user.id), month, 'birth_month', 'users.db', 'bot_users')
     await callback.message.edit_text("Теперь выберите день", reply_markup=days_keyboard(int(month)))
 
-def get_meme() :
-    arr=range(1, 24)
-    photo=open(f'./memes/mem{random.choice(arr)}.jpg', 'rb')
-    return photo
-
 @router.message(F.text == "Астрологический мем")
 async def meme(message: types.Message):
     await message.answer_photo(types.FSInputFile(f'./memes/mem{random.choice(range(1, 24))}.jpg'))
@@ -247,7 +244,14 @@ async def nat_map(message: types.Message):
     if fin_reg == 0:
         await SendMessage(chat_id=message.from_user.id, text="Кажется вы не завершили регистрацию, нажмите на кнопку 'Изменить данные' и добавьте недостающую информацию", reply_markup=main_keyboard())
         return
-    await message.answer("Натальная карта")
+    chart_link = request_map(str(user_data[9]), str(user_data[8]), str(user_data[3]), str(user_data[4]), str(user_data[5]), str(user_data[11]))
+    chart_data = request_sign(str(user_data[9]), str(user_data[8]), str(user_data[3]), str(user_data[4]), str(user_data[5]), str(user_data[11]))
+    if chart_link == False or chart_data == False:
+        await message.answer("Кажется вы неправильно указали свой город, нажмите на кнопку 'Изменить данные' и добавьте недостающую информацию", reply_markup=main_keyboard())
+        return
+    await message.answer_photo(types.URLInputFile(chart_link))
+    for i in chart_data:
+        await message.answer(i[2])
 
 @router.message(F.text == "Проверить совместимость")
 async def compat(message: types.Message, state: FSMContext):

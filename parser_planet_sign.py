@@ -1,6 +1,7 @@
 import requests
 import csv
 from bs4 import BeautifulSoup as BS
+from parser_natal_chart import city_coords
 
 def request_sign(minute, hour, day, month, year, city):
     latitude, longitude = city_coords(city)
